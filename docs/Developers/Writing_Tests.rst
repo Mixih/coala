@@ -133,7 +133,7 @@ So an example test that succeeds would be:
 
     .. seealso::
 
-        Module :doc:`Executing Tests <Executing_Tests>`
+        Module :doc:`Executing Tests <testing>`
             Documentation of running Tests with coverage
 
     As our coverage is measured across builds against several python
