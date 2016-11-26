@@ -1,4 +1,5 @@
 import multiprocessing
+from unittest.mock import patch
 import unittest
 from os.path import abspath, isfile, join, getmtime
 import shutil
@@ -9,7 +10,6 @@ from coalib.output.printers.LOG_LEVEL import LOG_LEVEL
 from coalib.processes.communication.LogMessage import LogMessage
 from coalib.settings.Section import Section
 from coalib.settings.Setting import Setting
-
 
 class BadTestBear(Bear):
 
@@ -184,13 +184,21 @@ class BearTest(unittest.TestCase):
         expected = Result.from_values(bear, 'test message', '/tmp/testy')
         self.assertEqual(result, expected)
 
-    def test_download_cached_file(self):
-        url = 'https://google.com'
-        filename = 'google.html'
+    @patch('coalib.bears.Bear.urlopen')
+    def test_download_cached_file(self, mock_url):
+        filename = "test.html"
+        url = 'https://test.com'
+        stringin = """<http>
+            <p1>
+                blah
+            <p1>
+        <http>"""
+        mock_url.urlopen.return_value = bytearray(stringin, 'utf-8')
         uut = TestBear(self.settings, None)
         self.assertFalse(isfile(join(uut.data_dir, filename)))
         expected_filename = join(uut.data_dir, filename)
         result_filename = uut.download_cached_file(url, filename)
+        import pdb; pdb.set_trace()
         self.assertEqual(result_filename, expected_filename)
         expected_time = getmtime(join(uut.data_dir, filename))
         result_filename = uut.download_cached_file(url, filename)
