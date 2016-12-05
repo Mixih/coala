@@ -6,7 +6,9 @@ source .misc/env_variables.sh
 args=()
 
 if [ "$system_os" == "LINUX" ] ; then
-  args+=('--cov' '--cov-fail-under=100' '--doctest-modules')
+  JUNIT_PATH=$CIRCLE_TEST_REPORTS'/python/tests.xml'
+  mkdir $CIRCLE_TEST_REPORTS'/python'
+  args+=('--cov' '--cov-fail-under=100' '--doctest-modules' '--junitxml=$JUNIT_PATH')
 fi
 
-python3 -m pytest "${args[@]}"
+python3 -m pytest "${args[@]}" 
