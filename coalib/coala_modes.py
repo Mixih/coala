@@ -29,11 +29,18 @@ def mode_non_interactive(console_printer, args):
     partial_print_sec_beg = functools.partial(
         print_section_beginning,
         console_printer)
-    results, exitcode, _ = run_coala(
-        print_results=print_results_no_input,
-        print_section_beginning=partial_print_sec_beg,
-        force_show_patch=True,
-        console_printer=console_printer)
+    if args.no_auto_apply is not None:
+        results, exitcode, _ = run_coala(
+            print_results=print_results_no_input,
+            print_section_beginning=partial_print_sec_beg,
+            autoapply=False,
+            console_printer=console_printer)
+    else:
+        results, exitcode, _ = run_coala(
+            print_results=print_results_no_input,
+            print_section_beginning=partial_print_sec_beg,
+            force_show_patch=True,
+            console_printer=console_printer)
 
     return exitcode
 

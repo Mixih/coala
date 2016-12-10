@@ -79,3 +79,18 @@ class coalaCITest(unittest.TestCase):
                                            '-b', 'SpaceConsistencyTestBear',
                                            '-c', os.devnull)
             self.assertIn('During execution, we found that some', output)
+
+    def test_no_apply_patch(self):
+        with bear_test_module(), \
+             prepare_file(['\t#include <a>'], None) as (lines, filename):
+            retval, output = execute_coala(
+                coala.main, 'coala', '--non-interactive', '--no-auto-apply',
+                '-c', os.devnull,
+                '-f', re.escape(filename),
+                '-b', 'SpaceConsistencyTestBear',
+                '--settings', 'use_spaces=True')
+            self.assertIn('Line contains ', output)  # Result message is shown
+            self.assertNotIn("Applied 'ShowPatchAction'", output)
+            self.assertEqual(retval, 5,
+                             'coala-ci must return exitcode 5 when it '
+                             'autofixes the code.')
